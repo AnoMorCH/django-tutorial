@@ -36,12 +36,50 @@ class Entry(models.Model):
     authors = models.ManyToManyField(Author)
     number_of_comments = models.IntegerField(default=0)
     number_of_pingbacks = models.IntegerField(default=0)
-    rating = models.IntegerField(default=5)
 
     def __str__(self):
         return self.headline
+
+
+class EntryDetail(models.Model):
+    entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
+    details = models.TextField()
 
         
 class ThemeBlog(Blog):
     theme = models.CharField(max_length=200)
 
+
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+    ticker = models.CharField(max_length=10)
+    num_employees = models.IntegerField()
+    num_chairs = models.IntegerField()
+    
+    def __str__(self):
+        return self.name
+
+    
+class Product(models.Model):
+    company = models.ForeignKey(
+        Company, 
+        on_delete=models.CASCADE, 
+        related_name='products',
+    )
+
+    
+class Service(models.Model):
+    company = models.ForeignKey(
+        Company, 
+        on_delete=models.CASCADE, 
+        related_name='services',
+    )
+
+    
+class Employee(models.Model):
+    company = models.ForeignKey(
+        Company, 
+        on_delete=models.CASCADE, 
+        related_name='employees',
+    )
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
